@@ -82,6 +82,8 @@ extern int g_graphics_quality;
  */
 extern int g_anti_aliasing;
 extern std::unordered_map<std::string, ReplaceAsset> g_replace_assets;
+// 透视
+extern string g_packet_notifier_host;
 
 namespace {
     // copy-pasted from https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string

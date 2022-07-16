@@ -7,11 +7,13 @@
 
 #define GamePackageName "jp.co.cygames.umamusume"
 #define GamePackageNameKor "com.kakaogames.umamusume"
+#define GamePackageNameCht "com.komoe.kmumamusumegp"
 
 enum class GameRegion {
     UNKNOWN,
     JAP,
-    KOR
+    KOR,
+    CHT
 };
 
 extern GameRegion gameRegion;
@@ -22,6 +24,8 @@ namespace {
             return GamePackageName;
         if (gameRegion == GameRegion::KOR)
             return GamePackageNameKor;
+        if (gameRegion == GameRegion::CHT)
+            return GamePackageNameCht;
         return "";
     }
 }

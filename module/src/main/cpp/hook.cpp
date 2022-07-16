@@ -9,6 +9,7 @@
 #include "il2cpp_hook.h"
 #include "localify/localify.h"
 #include "logger/logger.h"
+#include "il2cpp/il2cpp-class.h"
 
 using namespace std;
 using namespace localify;
@@ -27,6 +28,7 @@ bool g_dump_db_entries = false;
 int g_graphics_quality = -1;
 int g_anti_aliasing = -1;
 std::unordered_map<std::string, ReplaceAsset> g_replace_assets;
+std::string g_packet_notifier_host;
 
 GameRegion gameRegion = GameRegion::UNKNOWN;
 
@@ -38,6 +40,9 @@ bool isGame(const char *pkgNm) {
     }
     if (strcmp(pkgNm, GamePackageNameKor) == 0) {
         gameRegion = GameRegion::KOR;
+    }
+    if (strcmp(pkgNm, GamePackageNameCht) == 0) {
+        gameRegion = GameRegion::CHT;
     }
     if (gameRegion != GameRegion::UNKNOWN) {
         LOGI("detect game: %s", pkgNm);
@@ -289,6 +294,10 @@ std::optional<std::vector<std::string>> read_config() {
 
                 dicts.emplace_back(dict);
             }
+        }
+
+        if(document.HasMember("packetNotifierHost")){
+            g_packet_notifier_host = std::string(document["packetNotifierHost"].GetString());
         }
     }
 

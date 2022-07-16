@@ -6,6 +6,7 @@
 #include "il2cpp/il2cpp_symbols.h"
 #include "localify/localify.h"
 #include "logger/logger.h"
+#include "notifier/notifier.h"
 #include <codecvt>
 #include <thread>
 
@@ -512,6 +513,25 @@ void set_anti_aliasing_hook(int level) {
     reinterpret_cast<decltype(set_anti_aliasing_hook) *>(set_anti_aliasing_orig)(g_anti_aliasing);
 }
 
+void* DecompressResponse_BUMA_orig = nullptr;
+
+Il2CppArray* DecompressResponse_BUMA_hook(
+        Il2CppArray* responseData)
+{
+    Il2CppArray* ret = reinterpret_cast<decltype(DecompressResponse_BUMA_hook)*>(DecompressResponse_BUMA_orig)(
+            responseData);
+    char* buf = ((char*)ret)+kIl2CppSizeOfArray;
+    const std::string data(buf,ret->max_length);
+
+    auto notifier_thread = std::thread([&]()
+            {
+                notifier::notify_response(data);
+            });
+    notifier_thread.join();
+
+    return ret;
+}
+
 Il2CppObject *display_main = nullptr;
 
 Il2CppObject *(*display_get_main)();
@@ -699,6 +719,11 @@ void hookMethods() {
     auto query_dispose_addr = il2cpp_symbols::get_method_pointer(
             "LibNative.Runtime.dll", "LibNative.Sqlite3",
             "Query", "Dispose", 0
+    );
+
+    auto DecompressResponse_BUMA_addr = il2cpp_symbols::get_method_pointer(
+            "umamusume.dll", "Gallop",
+            "HttpHelper", "DecompressResponse_BUMA", 1
     );
 
     auto story_timeline_controller_play_addr = il2cpp_symbols::get_method_pointer(
@@ -985,6 +1010,10 @@ void hookMethods() {
 
     if (g_anti_aliasing != -1) {
         ADD_HOOK(set_anti_aliasing);
+    }
+
+    if (!g_packet_notifier_host.empty()){
+        ADD_HOOK(DecompressResponse_BUMA);
     }
 }
 

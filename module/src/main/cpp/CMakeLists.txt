@@ -49,10 +49,10 @@ if (${API} STREQUAL "riru")
 
     include_directories(include)
 
-    add_library(${MODULE_NAME} SHARED main_riru.cpp hook.cpp il2cpp/il2cpp_symbols.cpp il2cpp_hook.cpp localify/localify.cpp logger/logger.cpp ${CMAKE_CURRENT_BINARY_DIR}/config.cpp)
+    add_library(${MODULE_NAME} SHARED main_riru.cpp hook.cpp il2cpp/il2cpp_symbols.cpp il2cpp_hook.cpp localify/localify.cpp logger/logger.cpp notifier/notifier.cpp ${CMAKE_CURRENT_BINARY_DIR}/config.cpp)
     target_link_libraries(${MODULE_NAME} log dobby SQLiteCpp sqlite3 riru::riru)
 elseif (${API} STREQUAL "zygisk")
-    add_library(${MODULE_NAME} SHARED main_zygisk.cpp hook.cpp il2cpp/il2cpp_symbols.cpp il2cpp_hook.cpp localify/localify.cpp logger/logger.cpp)
+    add_library(${MODULE_NAME} SHARED main_zygisk.cpp hook.cpp il2cpp/il2cpp_symbols.cpp il2cpp_hook.cpp localify/localify.cpp logger/logger.cpp notifier/notifier.cpp)
     target_link_libraries(${MODULE_NAME} log dobby SQLiteCpp sqlite3)
 endif()
 
