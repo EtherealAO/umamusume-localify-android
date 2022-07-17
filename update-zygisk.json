@@ -1,6 +1,6 @@
 {
-  "version": "2.1.6",
+  "version": "2.1.8",
   "versionCode": 9,
-  "zipUrl": "https://github.com/Kimjio/umamusume-localify-android/releases/latest/download/zygisk-umamusume-localify-2.1.6-release.zip",
-  "changelog": "https://raw.githubusercontent.com/Kimjio/umamusume-localify-android/main/CHANGELOG.md"
+  "zipUrl": "https://github.com/UmamusumeResponseAnalyzer/umamusume-localify-android/releases/latest/download/zygisk-umamusume-localify-2.1.8-release.zip",
+  "changelog": "https://raw.githubusercontent.com/UmamusumeResponseAnalyzer/umamusume-localify-android/main/CHANGELOG.md"
 }

@@ -409,7 +409,8 @@ void hack_thread(void *arg [[maybe_unused]]) {
         }
     }
     if (IsABIRequiredNativeBridge()) {
-        return;
+        LOGI("IsABIRequiredNativeBridge is TRUE");
+        //return;
     }
     while (!il2cpp_handle) {
         sleep(1);

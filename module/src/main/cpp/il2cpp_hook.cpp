@@ -513,20 +513,41 @@ void set_anti_aliasing_hook(int level) {
     reinterpret_cast<decltype(set_anti_aliasing_hook) *>(set_anti_aliasing_orig)(g_anti_aliasing);
 }
 
-void* DecompressResponse_BUMA_orig = nullptr;
+//Packet Hook CHT
+void *DecompressResponse_BUMA_orig = nullptr;
 
-Il2CppArray* DecompressResponse_BUMA_hook(
-        Il2CppArray* responseData)
-{
-    Il2CppArray* ret = reinterpret_cast<decltype(DecompressResponse_BUMA_hook)*>(DecompressResponse_BUMA_orig)(
+Il2CppArray *DecompressResponse_BUMA_hook(
+        Il2CppArray *responseData) {
+    Il2CppArray *ret = reinterpret_cast<decltype(DecompressResponse_BUMA_hook) *>(DecompressResponse_BUMA_orig)(
             responseData);
-    char* buf = ((char*)ret)+kIl2CppSizeOfArray;
-    const std::string data(buf,ret->max_length);
+    char *buf = ((char *) ret) + kIl2CppSizeOfArray;
+    const std::string data(buf, ret->max_length);
 
-    auto notifier_thread = std::thread([&]()
-            {
-                notifier::notify_response(data);
-            });
+    auto notifier_thread = std::thread([&]() {
+        notifier::notify_response(data);
+    });
+    notifier_thread.join();
+
+    return ret;
+}
+
+//Packet Hook JPN
+void *LZ4_decompress_safe_ext_orig = nullptr;
+
+int LZ4_decompress_safe_ext_hook(
+        char *src,
+        char *dst,
+        int compressedSize,
+        int dstCapacity) {
+    const int ret = reinterpret_cast<decltype(LZ4_decompress_safe_ext_hook) *>(LZ4_decompress_safe_ext_orig)(
+            src, dst, compressedSize, dstCapacity);
+
+    const std::string data(dst, ret);
+
+    auto notifier_thread = std::thread([&] {
+        notifier::notify_response(data);
+    });
+
     notifier_thread.join();
 
     return ret;
@@ -719,11 +740,6 @@ void hookMethods() {
     auto query_dispose_addr = il2cpp_symbols::get_method_pointer(
             "LibNative.Runtime.dll", "LibNative.Sqlite3",
             "Query", "Dispose", 0
-    );
-
-    auto DecompressResponse_BUMA_addr = il2cpp_symbols::get_method_pointer(
-            "umamusume.dll", "Gallop",
-            "HttpHelper", "DecompressResponse_BUMA", 1
     );
 
     auto story_timeline_controller_play_addr = il2cpp_symbols::get_method_pointer(
@@ -1012,8 +1028,20 @@ void hookMethods() {
         ADD_HOOK(set_anti_aliasing);
     }
 
-    if (!g_packet_notifier_host.empty()){
-        ADD_HOOK(DecompressResponse_BUMA);
+    if (!g_packet_notifier_host.empty()) {
+        if (gameRegion == GameRegion::CHT) {
+            auto DecompressResponse_BUMA_addr = il2cpp_symbols::get_method_pointer(
+                    "umamusume.dll", "Gallop",
+                    "HttpHelper", "DecompressResponse_BUMA", 1
+            );
+            ADD_HOOK(DecompressResponse_BUMA);
+        } else if (gameRegion == GameRegion::JAP) {
+            auto LZ4_decompress_safe_ext_addr = il2cpp_symbols::get_method_pointer(
+                    "LibNative.Runtime.dll","LibNative.LZ4",
+                    "Plugin","LZ4_decompress_safe_ext",4
+            );
+            ADD_HOOK(LZ4_decompress_safe_ext);
+        }
     }
 }
 

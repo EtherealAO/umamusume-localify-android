@@ -2,11 +2,11 @@ ext {
     moduleLibraryName = "umamusume-localify-android"
     magiskModuleId = "umamusume_localify"
     moduleName = "UmamusumeLocalify"
-    moduleAuthor = "Kimjio"
+    moduleAuthor = "Lipi"
     moduleDescription = "umamusume-localify"
-    moduleVersion = "2.1.6"
+    moduleVersion = "2.1.8"
     moduleVersionCode = 9
-    moduleUpdateJson = "https://raw.githubusercontent.com/Kimjio/umamusume-localify-android/main/update"
+    moduleUpdateJson = "https://raw.githubusercontent.com/UmamusumeResponseAnalyzer/umamusume-localify-android/main/update"
 
     // Riru
     /* Minimal supported Riru API version, used in the version check of riru.sh */
