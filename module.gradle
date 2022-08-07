@@ -4,7 +4,7 @@ ext {
     moduleName = "UmamusumeLocalify"
     moduleAuthor = "Lipi"
     moduleDescription = "umamusume-localify"
-    moduleVersion = "2.1.8"
+    moduleVersion = "2.1.9"
     moduleVersionCode = 9
     moduleUpdateJson = "https://raw.githubusercontent.com/UmamusumeResponseAnalyzer/umamusume-localify-android/main/update"
 

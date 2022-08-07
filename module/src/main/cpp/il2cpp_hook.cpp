@@ -553,6 +553,14 @@ int LZ4_decompress_safe_ext_hook(
     return ret;
 }
 
+//Bypass root check
+void* IsIllegalUser_orig=nullptr;
+Boolean IsIllegalUser_hook(){
+    Boolean retv = Boolean();
+    retv.m_value=false;
+    return retv;
+}
+
 Il2CppObject *display_main = nullptr;
 
 Il2CppObject *(*display_get_main)();
@@ -909,6 +917,10 @@ void hookMethods() {
                                                      Il2CppObject *request)>(il2cpp_symbols::get_method_pointer(
             "_Cyan.dll", "Cyan.Loader", "AssetLoader", "LoadOne", 2));
 
+    auto IsIllegalUser_addr = il2cpp_symbols::get_method_pointer(
+            "Cute.Core.Assembly.dll","Cute.Core","Device","IsIllegalUser",0
+            );
+
     if (!assets && !g_font_assetbundle_path.empty()) {
         auto assetbundlePath = localify::u8_u16(g_font_assetbundle_path);
         if (!assetbundlePath.starts_with(u"/")) {
@@ -998,6 +1010,8 @@ void hookMethods() {
     ADD_HOOK(query_ctor)
     ADD_HOOK(query_getstr)
     ADD_HOOK(query_dispose)
+
+    ADD_HOOK(IsIllegalUser);
 
     if (g_replace_to_builtin_font || g_replace_to_custom_font) {
         ADD_HOOK(on_populate)

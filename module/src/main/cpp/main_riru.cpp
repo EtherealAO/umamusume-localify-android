@@ -18,7 +18,7 @@ static void specializeAppProcessPre(
         return;
     }
     auto pkgNm = env->GetStringUTFChars(*niceName, nullptr);
-    if (strcmp(pkgNm, GamePackageName) == 0 || strcmp(pkgNm, GamePackageNameKor) == 0 || strcmp(pkgNm, GamePackageNameCht) == 0) {
+    if (strcmp(pkgNm, GamePackageName) == 0 || strcmp(pkgNm, GamePackageNameKor) == 0 || strcmp(pkgNm, GamePackageNameCht) == 0 || strcmp(pkgNm, GamePackageNameChtMc) == 0) {
         enable_hack = isGame(pkgNm);
     }
     env->ReleaseStringUTFChars(*niceName, pkgNm);
@@ -92,6 +92,11 @@ void hook() {
                         .append(GamePackageNameCht).append("/cache").data(),
                 F_OK)==0){
             gameRegion = GameRegion::CHT;
+        }else if (access(
+                string("/data/data/")
+                        .append(GamePackageNameChtMc).append("/cache").data(),
+                F_OK)==0){
+            gameRegion = GameRegion::CHTMC;
         }
         int ret;
         pthread_t ntid;

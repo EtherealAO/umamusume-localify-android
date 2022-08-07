@@ -44,6 +44,9 @@ bool isGame(const char *pkgNm) {
     if (strcmp(pkgNm, GamePackageNameCht) == 0) {
         gameRegion = GameRegion::CHT;
     }
+    if (strcmp(pkgNm, GamePackageNameChtMc) == 0){
+        gameRegion= GameRegion::CHTMC;
+    }
     if (gameRegion != GameRegion::UNKNOWN) {
         LOGI("detect game: %s", pkgNm);
         return true;
