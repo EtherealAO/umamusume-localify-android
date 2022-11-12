@@ -85,6 +85,7 @@ extern bool g_ui_loading_show_orientation_guide;
 extern bool g_restore_notification;
 extern std::unordered_map<std::string, ReplaceAsset> g_replace_assets;
 extern std::string g_replace_assetbundle_file_path;
+extern string g_packet_notifier_host;
 
 namespace {
     // copy-pasted from https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string

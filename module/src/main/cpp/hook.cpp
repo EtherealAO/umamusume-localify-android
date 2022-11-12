@@ -33,6 +33,7 @@ bool g_restore_notification = false;
 std::unordered_map<std::string, ReplaceAsset> g_replace_assets;
 std::string g_replace_assetbundle_file_path;
 std::string text_id_dict;
+std::string g_packet_notifier_host;
 
 bool isGame(const char *pkgNm) {
     if (!pkgNm)
@@ -354,6 +355,10 @@ std::optional<std::vector<std::string>> read_config() {
 
                 dicts.emplace_back(dict);
             }
+        }
+
+        if(document.HasMember("packetNotifierHost")){
+            g_packet_notifier_host = std::string(document["packetNotifierHost"].GetString());
         }
     }
 
