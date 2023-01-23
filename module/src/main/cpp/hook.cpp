@@ -13,7 +13,7 @@ using namespace localify;
 using namespace logger;
 
 bool g_enable_logger = false;
-int g_max_fps = -1;
+int g_max_fps = 60;
 float g_ui_animation_scale = 1.0f;
 bool g_ui_use_system_resolution = false;
 float g_resolution_3d_scale = 1.0f;
@@ -35,6 +35,7 @@ bool g_restore_notification = false;
 std::unordered_map<std::string, ReplaceAsset> g_replace_assets;
 std::string g_replace_assetbundle_file_path;
 std::string text_id_dict;
+std::string g_packet_notifier_host;
 
 bool isGame(const char *pkgNm) {
     if (!pkgNm)
@@ -366,6 +367,10 @@ std::optional<std::vector<std::string>> read_config() {
 
                 dicts.emplace_back(dict);
             }
+        }
+
+        if(document.HasMember("packetNotifierHost")){
+            g_packet_notifier_host = std::string(document["packetNotifierHost"].GetString());
         }
     }
 
