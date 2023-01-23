@@ -2454,17 +2454,17 @@ void hookMethods() {
         ADD_HOOK(ScheduleLocalPushes)
     }
 
-    ADD_HOOK(GameSystem_FixedUpdate);
+    //ADD_HOOK(GameSystem_FixedUpdate);
 
-    ADD_HOOK(DialogCommon_Close);
+    //ADD_HOOK(DialogCommon_Close);
 
-    ADD_HOOK(GallopUtil_GotoTitleOnError);
+    //ADD_HOOK(GallopUtil_GotoTitleOnError);
 
-    ADD_HOOK(Light_set_shadowResolution);
+    //ADD_HOOK(Light_set_shadowResolution);
 
-    ADD_HOOK(PathResolver_GetLocalPath);
+    //ADD_HOOK(PathResolver_GetLocalPath);
 
-    ADD_HOOK(AssetBundleRequest_GetResult);
+    //ADD_HOOK(AssetBundleRequest_GetResult);
 
     ADD_HOOK(Device_IsIllegalUser)
 
@@ -2474,13 +2474,13 @@ void hookMethods() {
 
     ADD_HOOK(SafetyNet_OnError)
 
-    ADD_HOOK(NowLoading_Show)
+    //ADD_HOOK(NowLoading_Show)
 
-    ADD_HOOK(NowLoading_Show2)
+    //ADD_HOOK(NowLoading_Show2)
 
-    ADD_HOOK(assetbundle_unload)
+    //ADD_HOOK(assetbundle_unload)
 
-    ADD_HOOK(assetbundle_LoadFromFile)
+    //ADD_HOOK(assetbundle_LoadFromFile)
 
     if (replaceAssets) {
         ADD_HOOK(assetbundle_load_asset);
@@ -2514,31 +2514,31 @@ void hookMethods() {
         ADD_HOOK(CharaPropRendererAccessor_SetTexture);
     }
 
-    ADD_HOOK(get_preferred_width)
+    //ADD_HOOK(get_preferred_width)
 
-    ADD_HOOK(an_text_fix_data)
+    //ADD_HOOK(an_text_fix_data)
 
-    ADD_HOOK(an_text_set_material_to_textmesh)
+    //ADD_HOOK(an_text_set_material_to_textmesh)
 
-    ADD_HOOK(load_zekken_composite_resource)
+    //ADD_HOOK(load_zekken_composite_resource)
 
-    ADD_HOOK(wait_resize_ui)
+    //ADD_HOOK(wait_resize_ui)
 
     // hook UnityEngine.TextGenerator::PopulateWithErrors to modify text
     ADD_HOOK(populate_with_errors)
 
-    ADD_HOOK(localizeextension_text)
+    //ADD_HOOK(localizeextension_text)
 
     // Looks like they store all localized texts that used by code in a dict
     ADD_HOOK(localize_get)
 
-    ADD_HOOK(story_timeline_controller_play)
+    //ADD_HOOK(story_timeline_controller_play)
 
-    ADD_HOOK(story_race_textasset_load)
+    //ADD_HOOK(story_race_textasset_load)
 
-    ADD_HOOK(get_modified_string)
+    //ADD_HOOK(get_modified_string)
 
-    ADD_HOOK(update)
+    //ADD_HOOK(update)
 
     ADD_HOOK(query_setup)
     ADD_HOOK(query_getstr)

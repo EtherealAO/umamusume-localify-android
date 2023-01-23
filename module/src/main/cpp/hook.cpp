@@ -12,7 +12,7 @@ using namespace localify;
 using namespace logger;
 
 bool g_enable_logger = false;
-int g_max_fps = -1;
+int g_max_fps = 60;
 float g_ui_animation_scale = 1.0f;
 bool g_ui_use_system_resolution = false;
 float g_resolution_3d_scale = 1.0f;
