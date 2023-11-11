@@ -3346,96 +3346,43 @@ string current_time() {
     return to_string(ms.count());
 }
 
-void *HttpHelper_Initialize_orig = nullptr;
-
-void HttpHelper_Initialize_hook(Il2CppObject *httpManager) {
-    reinterpret_cast<decltype(HttpHelper_Initialize_hook) *>(HttpHelper_Initialize_orig)(
-            httpManager);
-
-    if (g_dump_msgpack_request) {
-        auto CompressFunc = CreateDelegate(httpManager,
-                                           *([](Il2CppObject * /*thisObj*/, Il2CppArray *in) {
-                                               if (in->max_length<
-                                                       0 || in->max_length>IL2CPP_ARRAY_MAX_SIZE) {
-                                                   LOGW("Wrong address...");
-                                                   return static_cast<Il2CppArray *>(nullptr);
-                                               }
-                                               auto length = Array_get_Length(&(in->obj));
-                                               char *buf = reinterpret_cast<char *>(in) +
-                                                           kIl2CppSizeOfArray;
-                                               const string data(buf, length);
-
-                                               auto out_path = "/sdcard/Android/data/"s.append(
-                                                       Game::GetCurrentPackageName()).append(
-                                                       "/msgpack_dump/").append(
-                                                       current_time()).append("Q.msgpack");
-
-                                               DumpMsgPackFile(out_path, data.data(),
-                                                               data.length());
-                                               if (!g_packet_notifier.empty()) {
-                                                   auto notifier_thread = thread([&]() {
-                                                       notifier::notify_request(data);
-                                                   });
-                                                   notifier_thread.join();
-                                               }
-                                               if (Game::currentGameRegion == Game::Region::TWN ||
-                                                   Game::currentGameRegion == Game::Region::JAP) {
-                                                   // AES128 + LZ4 + α + base64
-                                                   return reinterpret_cast<Il2CppArray *(*)(
-                                                           Il2CppArray *)>(il2cpp_symbols::get_method_pointer(
-                                                           "umamusume.dll", "Gallop", "HttpHelper",
-                                                           "CompressRequest", 1))(in);
-                                               }
-                                               return in;
-                                           }));
-
-        reinterpret_cast<void (*)(Il2CppObject *,
-                                  Il2CppDelegate *)>(il2cpp_class_get_method_from_name(
-                httpManager->klass, "set_CompressFunc", 1)->methodPointer)(httpManager,
-                                                                           CompressFunc);
+void* DecompressResponse_BUMA_orig = nullptr;
+Il2CppArray* DecompressResponse_BUMA_hook(
+        Il2CppArray* responseData)
+{
+    Il2CppArray* ret = reinterpret_cast<decltype(DecompressResponse_BUMA_hook)*>(DecompressResponse_BUMA_orig)(
+            responseData);
+    char* buf = ((char*)ret) + kIl2CppSizeOfArray;
+    const std::string data(buf,ret->max_length);
+    if(!g_packet_notifier.empty()) {
+        auto notifier_thread = std::thread([&]()
+                                           {
+                                               notifier::notify_response(data);
+                                           });
+        notifier_thread.join();
     }
-
-    auto DecompressFunc = CreateDelegate(httpManager,
-                                         *([](Il2CppObject * /*thisObj*/, Il2CppArray *in) {
-                                             if (in->max_length<
-                                                     0 || in->max_length>IL2CPP_ARRAY_MAX_SIZE) {
-                                                 LOGW("Wrong address...");
-                                                 return static_cast<Il2CppArray *>(nullptr);
-                                             }
-                                             if (Game::currentGameRegion == Game::Region::TWN ||
-                                                 Game::currentGameRegion == Game::Region::JAP) {
-                                                 // AES128 + LZ4 + α + base64
-                                                 in = reinterpret_cast<Il2CppArray *(*)(
-                                                         Il2CppArray *)>(il2cpp_symbols::get_method_pointer(
-                                                         "umamusume.dll", "Gallop", "HttpHelper",
-                                                         "DecompressResponse", 1))(in);
-                                             }
-
-                                             auto length = Array_get_Length(&(in->obj));
-                                             char *buf = reinterpret_cast<char *>(in) +
-                                                         kIl2CppSizeOfArray;
-                                             const string data(buf, length);
-
-                                             auto out_path = "/sdcard/Android/data/"s.append(
-                                                     Game::GetCurrentPackageName()).append(
-                                                     "/msgpack_dump/").append(
-                                                     current_time()).append("R.msgpack");
-
-                                             DumpMsgPackFile(out_path, data.data(), data.length());
-                                             if (!g_packet_notifier.empty()) {
-                                                 auto notifier_thread = thread([&]() {
-                                                     notifier::notify_response(data);
-                                                 });
-                                                 notifier_thread.join();
-                                             }
-                                             return in;
-                                         }));
-
-    reinterpret_cast<void (*)(Il2CppObject *, Il2CppDelegate *)>(il2cpp_class_get_method_from_name(
-            httpManager->klass, "set_DecompressFunc", 1)->methodPointer)(httpManager,
-                                                                         DecompressFunc);
+    return ret;
 }
 
+void* LZ4_decompress_safe_ext_orig = nullptr;
+int LZ4_decompress_safe_ext_hook(
+        char* src,
+        char* dst,
+        int compressedSize,
+        int dstCapacity)
+{
+    const int ret = reinterpret_cast<decltype(LZ4_decompress_safe_ext_hook)*>(LZ4_decompress_safe_ext_orig)(
+            src, dst, compressedSize, dstCapacity);
+    const std::string data(dst, ret);
+    if(!g_packet_notifier.empty()) {
+        auto notifier_thread = std::thread([&]()
+                                           {
+                                               notifier::notify_response(data);
+                                           });
+        notifier_thread.join();
+    }
+    return ret;
+}
 void *DialogCircleItemDonate_Initialize_orig = nullptr;
 
 void DialogCircleItemDonate_Initialize_hook(Il2CppObject *thisObj, Il2CppObject *dialog,
@@ -4269,10 +4216,20 @@ void hookMethods() {
     }
 
     if (g_dump_msgpack) {
-        auto HttpHelper_Initialize_addr = il2cpp_symbols::get_method_pointer("umamusume.dll",
-                                                                             "Gallop", "HttpHelper",
-                                                                             "Initialize", 1);
-        ADD_HOOK(HttpHelper_Initialize)
+        if(Game::currentGameRegion == Game::Region::TWN) {
+            auto DecompressResponse_BUMA_addr = il2cpp_symbols::get_method_pointer(
+                    "umamusume.dll", "Gallop",
+                    "HttpHelper", "DecompressResponse_BUMA", 1
+            );
+            ADD_HOOK(DecompressResponse_BUMA);
+        }
+        else if(Game::currentGameRegion == Game::Region::JAP) {
+            auto LZ4_decompress_safe_ext_addr = il2cpp_symbols::get_method_pointer(
+                    "LibNative.Runtime.dll", "LibNative.LZ4",
+                    "Plugin", "LZ4_decompress_safe_ext", 4
+            );
+            ADD_HOOK(LZ4_decompress_safe_ext);
+        }
     }
 
     LOGI("Unity Version: %s", GetUnityVersion().data());
