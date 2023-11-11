@@ -49,8 +49,6 @@ struct ReplaceAsset {
 
 using namespace std;
 
-extern string moduleApi;
-
 extern bool g_enable_logger;
 extern int g_max_fps;
 extern float g_ui_animation_scale;
@@ -101,6 +99,7 @@ extern bool g_dump_msgpack;
 extern bool g_dump_msgpack_request;
 extern string g_packet_notifier;
 extern bool g_restore_gallop_webview;
+extern bool g_use_third_party_news;
 
 namespace {
     // copy-pasted from https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string
@@ -125,10 +124,6 @@ namespace {
     }
 
     bool IsABIRequiredNativeBridge() {
-        if (moduleApi == "riru"s) {
-            // Riru is a NativeBridge, so you can`t use other NativeBridge (ex. houdini).
-            return false;
-        }
         return ABI == "x86"s || ABI == "x86_64"s;
     }
 
